@@ -1,0 +1,142 @@
+QuakeWorld for OS/2
+(fix 4)
+
+ID released Quake and QuakeWorld sources under GPL - so I ported it to OS/2.
+
+You need:
+Installed version of DOS/Windows/Linux Quake
+OS/2 4 (maybe sound won't work in 3)
+TCP/IP (QuakeWorld runs only on TCP/IP)
+(optionally) XFree86 or other XServer - for X version of QuakeWorld
+
+Using QuakeWorld client:
+Copy qwcl.exe or qwcl_x11.exe to your Quake directory and run it.
+qwcl.exe has full-screen VGA graphics. qwcl_x11.exe runs in X-Window and is
+very slow.
+
+Using QuakeWorld server:
+Copy qwsv.exe to your Quake directory. Download qwsv package for Linux or
+Windows from ID ftp site and copy file qwprogs.dat to your QW/ directory. Write
+server.cfg file - like in Linux or Windows version. Run qwsv.exe.
+
+Video:
+QuakeWorld run in full screen session. It uses VGA driver from Dos version of
+Quake with small modifications (use emxio instead of direct port touching, call
+VioSetMode instead of Int 10h). QuakeWorld can also use extended OS/2 modes, if
+your OS/2 video driver supports them. Use parameter -stdvid to disable probing
+for extended modes on startup.
+
+Sound:
+QuakeWorld uses DART. DART is available in OS/2 4 and maybe in OS/2 3 with
+current fixpacks (I don't have it, so I don't know). Default setting is 11025HZ,
+8bit, stereo. You can change it with -sndspeed <rate>, -sndbits <bits>, -sndmono
+and -sndstereo switches. Sound does not have autodetection - if your sound card
+can't do 11025HZ-8bit-stereo, you have to change it with switches. 44100HZ,
+16bit, stereo does not work on my computer - I don't know why.
+Note: setting higher sample rates or bits won't bring you better sound and will
+slow down game. Use only when necessary.
+
+Running multiple instances of QuakeWorld:
+You can run multiple instances of QuakeWorld client, if you specify different
+port for each (parameter -port, default is 27001). If you want to run multiple
+instances (for example to overvote other players :-), each must be started from
+different executable file. QuakeWorld uses self-modifying code and if you start
+the same executable file several times, it will crash because several processes
+will be patching into the same code.
+
+Server:
+Server port was quite easy. The only problem was console, because EMX doesn't
+support select() on terminal. Keys are echoed with some delay on the console,
+but otherwise it works.
+
+Compiling QuakeWorld:
+To compile QuakeWorld, you need: EMX, GNU make, EMX multimedia extension
+(mm4emx11 package on hobbes). XFree86 is optional.
+Fix paths to main QW source directory and to XFree86 directory in Makefile.OS2.
+If you don't have XFree86 or you don't want to build X version, remove
+qwcl_x11.exe from TARGETS line in Makefile.
+Type make -f Makefile.OS2 build_release to compile QuakeWorld. Strip binaries
+with emxbind -s.
+
+FAQ:
+Q: Sound doesn't work.
+A: You must have OS/2 4 or (maybe) OS/2 3 with current fixpacks.
+   Try using -sndspeed, -sndbits, -sndmono and -sndstereo to set parameters
+   supported by your sound card. This port does not have autodetection.
+
+Q: Sound is shattered or is played too late.
+A: Set different value in os2_dma_sound_shift variable. Try both positive and
+   negative values. Default is 384.
+
+Q: Mode-X video modes don't work.
+A: Buy different VGA card. :-) I just copied the driver from Dos version of
+   Quake (and fixed one incompatibility with S3 Virge).
+
+Q: Extended OS/2 video modes don't work.
+A: I have very few docs for the extended modes and I don't understand it very
+   well. If they work, you should consider yourself lucky.
+
+Q: QuakeWorld crashes on startup.
+A: Try -stdvid or -nosound.
+
+Q: I see Error: UDP_OpenSocket.
+A: You don't have TCP/IP properly configured -- or you don't have it at all.
+
+Q: qwcl_x11.exe writes _X11TransSocketINETConnect: can't connect.
+A: You must run some XServer.
+
+Q: qwcl_x11.exe is slow.
+A: X-Window is slow by design. Unless you have 500MHz machine, it will be
+   unplayable. Use full-screen qwcl.exe. If you really want to run X-Window
+   version, you should decrease resolution of your display.
+
+Q: qwcl_x11.exe displays bad colors.
+A: It ain't my fault. Linux version has the same problems. Switch your XServer
+   to different color depth.
+
+Q: How do I use mouse in qwcl_x11?
+A: Type _windowed_mouse 1 at the console.
+
+Q: Is there GL version of QuakeWorld to take adventage of 3D cards?
+A: No.
+
+Q: qwsv.exe can't start and complains that it cannot find progs.
+A: You need to get qwprogs.dat file from Linux or Windows qwsv package. You can
+   freely download it from ID ftp site.
+
+Q: Are you the same person who ported Quake on OS/2?
+A: No.
+
+Q: I am too lame. I wanna be kk00l!!!
+A: Use aim-bot. :-p
+
+History:
+
+Fix 1:
+
+Fixed mouse buttons lag with amouse.sys driver
+
+Fixed sound getting bad after about hour of game
+	(I still don't know the real cause - I just restart sound driver every
+	10 minutes)
+
+Larger dynamic allocation zone - fixes crashes with some mods
+	(original QuakeWorld would probably crash too)
+
+Fix 2:
+
+Right alt works
+
+New variable os2_dma_sound_shift, maybe it fixes sound with some broken drivers
+
+Fixed mouse sometimes didn't work until the user changed video mode
+
+Fix 3:
+
+Fixed bug in video-mode handling. When it exits with fatal error, it writes the error in text mode.
+
+Fix 4:
+
+Workaround for bugs in S3Virge video driver. The screen got blank after
+switching from PMShell to QW and after switching from extended mode to normal.
+

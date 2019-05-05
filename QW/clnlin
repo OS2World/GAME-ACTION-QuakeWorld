@@ -1,0 +1,4 @@
+#!/bin/bash
+rm releasei386-glibc/qw*
+rm releasei386-glibc/client/*.o
+rm releasei386-glibc/server/*.o

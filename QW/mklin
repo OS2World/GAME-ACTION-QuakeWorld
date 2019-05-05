@@ -1,0 +1,5 @@
+#!/bin/bash
+make -f Makefile.Linux build_release
+cp releasei386-glibc/qwcl ../..
+cp releasei386-glibc/qwcl.x11 ../..
+cp releasei386-glibc/qwsv ../..
